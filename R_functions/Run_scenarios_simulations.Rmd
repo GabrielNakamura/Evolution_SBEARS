@@ -1,0 +1,46 @@
+---
+title: "Running simulations SBEARS"
+author: "Gabriel Nakamura"
+date: "2025-04-03"
+output: html_document
+---
+
+# Introduction
+
+# Settings for gen3sis simulations
+
+# Scenarios
+
+## Scenario 1 - no environment and no barriers 
+
+This scenarios assumes a random diffusion of individuals in space. This is 
+    supposed to be a scenario in which a Brownian model could capture the 
+    the patterns in species composition distribution during time 
+    
+```{r}
+
+# output.dir <- file.path(getwd(),"gen3sis/gen3sis outputs/")
+# setting the folder to receive the results 
+output_dir_scenario1 <- file.path(here::here("gen3sis_simulations", "gen3sis_output_1"))
+
+# setting the folder to get the configuration parameters for the simulation of the first scenario
+config1_dir <- file.path(here::here("gen3sis_simulations", "config", "config_presence", "config_presence.R"))
+
+# setting the folder path to get the landscape in which the simulation will be running
+landscape_scenario1 <- file.path(here::here("gen3sis_simulations", "landscape_plain", "landscapes"))
+
+sim_scenario1 <- 
+  gen3sis::run_simulation(config = config1_dir,
+                          landscape = landscape_scenario1,
+                          output_directory = output_dir_scenario1, 
+                          verbose = 3)
+
+# saving simulation output 
+saveRDS(sim_scenario1, here("gen3sis_simulations", "output_dir_scenario1"))
+
+```
+
+
+## Scenario 2
+
+

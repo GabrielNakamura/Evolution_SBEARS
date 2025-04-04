@@ -1,0 +1,159 @@
+# Packages to simulation.
+require(gen3sis)
+require(raster)
+require(scales) # Package to rescale variables, vectors and ranges.
+
+
+################################################################################
+# Defining geographical landscape and coordinates.
+
+# Fixing geographical limits.
+latmin <- -10
+latmax <- 0
+longmin <- -5
+longmax <- 5
+
+# Defining the size of our landscape.
+Ncol <- 10
+Nrow <- 10
+Nsites <- Ncol*Nrow
+# N sites Ncol*Nrow = 100.
+
+# Defining the temporal variability of the landscape.
+Ntimesteps <- 1000
+
+# Mapping site-center coordinates: lat , long.
+coordinates <- data.frame(lat = rep(seq(latmax, latmin, length.out=Nrow), each=Ncol), long = rep(seq(longmin, longmax, length.out=Ncol), times=Nrow))
+# It's needed ordering latitude from maximum to minimum for that the matrix/raster be properly built.
+
+# Checking coordinates.
+coordinates$lat
+coordinates$long
+
+################################################################################
+
+# Creating arrays of environmental variables. Each array has three dimensions.
+temp_array <- array(NA, dim=c(Nrow, Ncol, Ntimesteps))
+
+# Creating environmental data.frames.
+temp_df <- matrix(NA, nrow=(Nrow*Ncol), ncol=(length(c(Ncol,Nrow))+Ntimesteps))
+
+# Creating a vector for the names to be used to name input files (one per time step)
+timesteps_names <- vector(mode="character", length=Ntimesteps)
+
+####################################################################################
+# Here the landscape is built.
+
+# Making the landscape.
+# Temporal loop.
+for(timestep in 1:Ntimesteps){
+  # Counter for elements.
+  counting <- 1
+
+  # Naming the timesteps.
+  timesteps_names[timestep] <- paste("X", timestep, "", sep="")
+
+  # Loops for the spatial dimensions.
+  for(i in 1:Nrow){
+    for(j in 1:Ncol){
+      # Temperature is defined as a function of the latitude and with a normal random component.
+      # The mean temperature scale is linear and fixed as 30ºC in Equator and as -30ºC in poles.
+      # The standard deviation is defined as 2ºC.
+      #cat(coordinates$lat[counting], coordinates$long[counting], "\n")
+
+      temp_array[i, j, timestep] <- 30 - 0.667*abs(coordinates$lat[counting]) + rnorm(1, sd=2)
+
+
+      # Saving the environmental variables in a dataframe format for distance matrices.
+      temp_df[counting, 2+timestep] <- temp_array[i, j, timestep]
+      counting <- counting + 1
+    }
+  }
+}
+# Associating coordinates to raster.
+temp_df[, 1] <- coordinates$long
+temp_df[, 2] <- coordinates$lat
+
+####################################################################################
+
+####################################################################################
+# Viewing the environmental landscape.
+
+# Temperature in a raster format.
+temp_raster <- raster::rasterFromXYZ(temp_df[, c(1, 2, 3)])
+
+# Parameters to plot the landscape.
+tempmin <- min(values(temp_raster), na.rm=T)
+tempmax <- max(values(temp_raster), na.rm=T)
+breaks <- c(0, seq(tempmin, tempmax, length.out=7))
+colorscale <- c('#4040ff', heat.colors(7, rev=T))
+
+# Plotting landscape.
+plot(temp_raster, col=heat.colors(7, rev=T), xlab="Long", ylab="Lat", main="Temperature")
+
+################################################################################
+# Saving landscape.
+
+# Define the work directory.
+# simulation_path <- "~/Dropbox/ada_simulations/plain_landscape"
+simulation_path <- here::here("gen3sis_simulations", "landscape_plain")
+dir.create(simulation_path)
+setwd(simulation_path)
+
+# Create a list of rasters with landscape information.
+landscapes_list <- list()
+for (timestep in 1:Ntimesteps){
+  # Create a raster from the landscape associated to each time step.
+  temp_raster <- rasterFromXYZ(temp_df[, c(1, 2, timestep+2)])
+  # prec_raster <- rasterFromXYZ(prec_dataframe[, c(1,2, timestep+2)])
+
+  # Add the raster of each time step to the list.
+  landscapes_list$temp <- c(landscapes_list$temp, temp_raster)
+  # landscapes_list$prec <- c(landscapes_list$prec, prec_raster)
+}
+
+# Save the landscapes list as a rds file.
+saveRDS(landscapes_list, file.path(here::here("gen3sis_simulations", "landscape_plain", "landscape_list.rds")))
+
+################################################################################
+# Importing the raster list.
+landscapes <- readRDS(file.path(here::here("gen3sis_simulations", "landscape_plain", "landscape_list.rds")
+                                )
+                      )
+landscapes$temp[[1]]
+# Using the rds format the data is imported as a list, then it's not needed modify it.
+
+################################################################################
+# Defining a function cost.
+
+# NULL FUNCTION COST: all the sites are equivalents.
+# source: the index of source site (origin).
+# habitable_src: habitability of source site.
+# dest: the index of destiny site.
+# habitable_dest: habitability of destiny site.
+cost_function_null <- function(source, habitable_src, dest, habitable_dest){
+  # Return 1 for any pair of sites.
+  return(1)
+}
+
+################################################################################
+# Creating the distances to input landscape in the simulation.
+create_input_landscape(landscapes = landscapes,
+                       # The cost function to calculate the distances in the landscape.
+                       cost_function = cost_function_null,
+                       # Directory name to save the files in.
+                       output_directory = file.path(simulation_path, "landscapes"),
+                       # All surrounding sites from a focal site: 4, 8 or 16 neighboring sites.
+                       directions = 8,
+                       calculate_full_distance_matrices = T
+                       # Calculate full distance matrices or only surrounding sites distances.
+                       # In the second case the distance between other sites is calculated
+                       # at each time step of simulation. Then:
+                       # TRUE: large storage and higher speed computing.
+                       # FALSE: lower storage and lower speed computing.
+)
+
+################################################################################
+# Finally, it's really important documenting the landscape you created. It is
+# doing writing the METADATA.txt file within the landscape folder. It's
+# automatically created by the function `create_input_landscape`.
