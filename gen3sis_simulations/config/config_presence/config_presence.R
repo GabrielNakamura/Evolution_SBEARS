@@ -31,16 +31,16 @@
 random_seed = 42
 
 # set the starting time step or leave NA to use the earliest/highest time-step.
-start_time = 1000#8000
+start_time = 900#8000
 
 # set the end time step or leave as NA to use the latest/lowest time-step (0).
 end_time = 0
 
 # maximum total number of species in the simulation before it is aborted.
-max_number_of_species = 200
+max_number_of_species = 1000
 
 # maximum number of species within one cell before the simulation is aborted.
-max_number_of_coexisting_species = 100
+max_number_of_coexisting_species = 200
 
 # a list of traits to include with each species
 # a "dispersal" trait is implicitly added in any case
@@ -53,7 +53,7 @@ trait_names = c("temp")
 environmental_ranges = list() #"temp"=NA
 
 # Parameters to change.
-dispersal_rate <- 0.4
+dispersal_rate <- 0.10
 
 # Extinction probability (local).
 extinction_prob <- 0

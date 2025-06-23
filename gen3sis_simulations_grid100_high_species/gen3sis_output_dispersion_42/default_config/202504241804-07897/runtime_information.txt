@@ -1,0 +1,57 @@
+runtime: 0.004885423 hours
+
+
+ R Version Information:
+
+               _                           
+platform       aarch64-apple-darwin20      
+arch           aarch64                     
+os             darwin20                    
+system         aarch64, darwin20           
+status                                     
+major          4                           
+minor          4.2                         
+year           2024                        
+month          10                          
+day            31                          
+svn rev        87279                       
+language       R                           
+version.string R version 4.4.2 (2024-10-31)
+nickname       Pile of Leaves              
+
+
+ Session Information: 
+
+R version 4.4.2 (2024-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.4.1
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Sao_Paulo
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] gen3sis_1.5.11
+
+loaded via a namespace (and not attached):
+ [1] vctrs_0.6.5       terra_1.7-78      cli_3.6.3         knitr_1.48        rlang_1.1.4       xfun_0.50        
+ [7] stringi_1.8.4     glue_1.7.0        rprojroot_2.0.4   htmltools_0.5.8.1 sp_2.1-4          rsconnect_1.3.4  
+[13] rmarkdown_2.28    grid_4.4.2        evaluate_0.24.0   fastmap_1.2.0     yaml_2.3.10       lifecycle_1.0.4  
+[19] stringr_1.5.1     compiler_4.4.2    codetools_0.2-20  igraph_2.0.3      Rcpp_1.0.13       pkgconfig_2.0.3  
+[25] here_1.0.1        rstudioapi_0.16.0 lattice_0.22-6    digest_0.6.37     gdistance_1.6.4   magrittr_2.0.3   
+[31] Matrix_1.7-1      tools_4.4.2       raster_3.6-26    
+
+
+ System: 
+
+ sysname 
+"Darwin" 

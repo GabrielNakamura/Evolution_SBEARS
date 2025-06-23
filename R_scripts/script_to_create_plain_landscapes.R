@@ -20,7 +20,7 @@ Nsites <- Ncol*Nrow
 # N sites Ncol*Nrow = 100.
 
 # Defining the temporal variability of the landscape.
-Ntimesteps <- 1000
+Ntimesteps <- 200
 
 # Mapping site-center coordinates: lat , long.
 coordinates <- data.frame(lat = rep(seq(latmax, latmin, length.out=Nrow), each=Ncol), long = rep(seq(longmin, longmax, length.out=Ncol), times=Nrow))

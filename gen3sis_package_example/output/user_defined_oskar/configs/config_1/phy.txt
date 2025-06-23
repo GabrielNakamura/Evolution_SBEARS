@@ -1,2 +1,0 @@
-"Ancestor"	"Descendent"	"Speciation.Time"	"Extinction.Time"	"Speciation.Type"
-"1"	1	1	10	0	"ROOT"

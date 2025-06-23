@@ -1,0 +1,32 @@
+---
+title: "Testing simulation parameters"
+author: "Gabriel Nakamura"
+date: "2025-04-06"
+output: html_document
+---
+
+Here we will test the effect of simulation parameters 
+
+```{r}
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+```
+
+Reading the simulation and getting occurrence matrix
+
+```{r}
+simulation_scenario1 <- here::here("gen3sis_simulations", "gen3sis_output_1", "config_presence")
+res_scenario1 <- get_node_site_matrix(simulation_path = simulation_scenario1, save = FALSE)
+```
+
+Processing the occurrences
+
+```{r}
+hist(rowSums(res_scenario1$node_site_matrix))
+occ_nodes_scenario1 <- res_scenario1$node_site_matrix
+beta_scenario1 <- betapart::beta.pair(x = occ_nodes_scenario1)
+hist(rowMeans(as.matrix(beta_scenario1$beta.sim)))
+hist(rowMeans(as.matrix(beta_scenario1$beta.sne)))
+hist(rowMeans(as.matrix(beta_scenario1$beta.sor)))
+```
+

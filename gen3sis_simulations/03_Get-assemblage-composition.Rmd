@@ -1,0 +1,116 @@
+---
+title: "Extracting co-occurrences from simulations"
+author: "Gabriel Nakamura"
+date: "2025-04-04"
+output: html_document
+---
+
+# Context
+
+# Functions and packages
+
+```{r}
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations", "gen3sis_output_1", "config_presence")
+simulation_output <- here::here("gen3sis_simulations", "gen3sis_output_1", "output_communities", "output_sim1.rds")
+
+```
+
+
+# Scenarios
+
+## Scenario 1
+
+Extracting community composition at all timesteps, phylogenetic tree and a dataframe 
+   with the labels of species and their birth time
+
+```{r}
+
+# main function to extract all the information - this takes a few minutes (5min in my windows 24GB  pc)
+res_sim_1 <- 
+  get_node_site_matrix(simulation_path = simulation_main, save = TRUE, output_file = simulation_output)
+
+```
+
+Extracting community composition at time zero and a matrix with community composition 
+    of nodes (occurrence of nodes in different sites ) - RUN FROM HERE
+
+```{r}
+
+res_sim_comm <- readRDS(simulation_output)
+
+# node and species composition matrix
+occ_nodes_spp <- res_sim_comm$node_site_matrix
+occ_nodes_spp <- res_sim_1$node_site_matrix
+
+# phylogeny
+phylo_sim <- res_sim_comm$tree
+phylo_sim <- res_sim_1$tree
+# data frame with species and node information
+df_nodes_spp <- res_sim_comm$nameIndexGuide
+df_nodes_spp <- res_sim_1$nameIndexGuide
+
+# coordinates of the sites 
+df_coords <- res_sim_comm$coordinates
+df_coords <- res_sim_1$coordinates
+
+
+
+# only the presence of species in time zero in each site
+occ_time_zero <- occ_nodes_spp[, match(phylo_sim$tip.label, colnames(occ_nodes_spp))]
+
+# only the presence of nodes in each site
+occ_nodes_only <- occ_nodes_spp[, -match(phylo_sim$tip.label, colnames(occ_nodes_spp))]
+
+hist(colSums(occ_time_zero)) # just to check out the distribution of occurrences of species 
+
+
+```
+
+
+# Scenario 3 - less coexistence
+
+
+```{r}
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations", "gen3sis_output_presence_less_coex", "config_presence_less_coex")
+simulation_output <- here::here("gen3sis_simulations", "gen3sis_output_1", "output_communities", "output_sim1.rds")
+
+```
+
+Extracting communities
+
+```{r}
+# main function to extract all the information - this takes a few minutes (5min in my windows 24GB  pc)
+res_sim_2 <- 
+  get_node_site_matrix(simulation_path = simulation_main, save = FALSE)
+
+occ_nodes_spp <- res_sim_2$node_site_matrix
+
+# phylogeny
+phylo_sim <- res_sim_2$tree
+
+# data frame with species and node information
+df_nodes_spp <- res_sim_2$nameIndexGuide
+
+# coordinates of the sites 
+df_coords <- res_sim_2$coordinates
+
+
+
+# only the presence of species in time zero in each site
+occ_time_zero <- occ_nodes_spp[, match(phylo_sim$tip.label, colnames(occ_nodes_spp))]
+
+# only the presence of nodes in each site
+occ_nodes_only <- occ_nodes_spp[, -match(phylo_sim$tip.label, colnames(occ_nodes_spp))]
+
+hist(colSums(occ_time_zero)) # just to check out the distribution of occurrences of species 
+
+```
+
+
+

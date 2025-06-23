@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+/gen3sis_package_example
+/gen3sis
+auxiliary_functions_marcelo.R
+**/*.zip
+**/plot/
