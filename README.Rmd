@@ -5,8 +5,46 @@ output:
     variant: gfm
 ---
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # Context
 
 # Repository structure
+
+The repository is structured as followed
+
+```{r, echo=FALSE}
+## Repository structure
+library(fs)
+
+# Get all tracked files via git
+tracked_files <- system("git ls-files", intern = TRUE)
+
+# Extract top-level folders
+top_level_dirs <- unique(dirname(tracked_files))
+top_level_dirs <- top_level_dirs[top_level_dirs != "."]
+
+# Filter only top-level folders in the current directory
+tracked_dirs <- dir_ls(path = ".", type = "directory", recurse = 0)
+tracked_dirs <- tracked_dirs[basename(tracked_dirs) %in% basename(top_level_dirs)]
+
+# Visualize only tracked folders
+purrr::walk(tracked_dirs, ~ dir_tree(.x, recurse = 0))
+
+
+```
+
+## Main folders
+
+- `R_functions`: folder containing auxiliary functions that are called in 
+    scripts and Rmarkdown files to run analyses
+    
+- `R_scripts`: folder with all the Rmarkdown files needed to run the simulations
+    used in the paper
+    
+- `gen3sis_simulations`: folder with files needed to set the simulations parameters
+
+
+
 
 # References
