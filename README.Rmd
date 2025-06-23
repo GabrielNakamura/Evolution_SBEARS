@@ -1,0 +1,12 @@
+---
+title: "Data and code for SBEARS"
+output: 
+  md_document:
+    variant: gfm
+---
+
+# Context
+
+# Repository structure
+
+# References
