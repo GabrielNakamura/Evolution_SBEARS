@@ -1,12 +1,29 @@
-# Packages to simulation.
+---
+title: "Creating landscapes"
+author: "Gabriel Nakamura"
+date: "2025-04-06"
+output: html_document
+---
+
+
+This file is used to create landscapes in which simulation processess in 
+    gen3sis will be running
+    
+# Packages and functions
+
+```{r}
 require(gen3sis)
 require(raster)
 require(scales) # Package to rescale variables, vectors and ranges.
 
+```
 
-################################################################################
-# Defining geographical landscape and coordinates.
+# Geographical landscape and coordinates
 
+Here we define the geographical limits, the size of our landscape and the 
+    temporal variability 
+    
+```{r}
 # Fixing geographical limits.
 latmin <- -10
 latmax <- 0
@@ -20,7 +37,7 @@ Nsites <- Ncol*Nrow
 # N sites Ncol*Nrow = 100.
 
 # Defining the temporal variability of the landscape.
-Ntimesteps <- 200
+Ntimesteps <- 1000
 
 # Mapping site-center coordinates: lat , long.
 coordinates <- data.frame(lat = rep(seq(latmax, latmin, length.out=Nrow), each=Ncol), long = rep(seq(longmin, longmax, length.out=Ncol), times=Nrow))
@@ -30,8 +47,15 @@ coordinates <- data.frame(lat = rep(seq(latmax, latmin, length.out=Nrow), each=N
 coordinates$lat
 coordinates$long
 
-################################################################################
+```
 
+# Environmental characteristics of the landscape
+
+Creating the environmental features of the landscape 
+
+## Plain ladscape 
+
+```{r}
 # Creating arrays of environmental variables. Each array has three dimensions.
 temp_array <- array(NA, dim=c(Nrow, Ncol, Ntimesteps))
 
@@ -40,8 +64,11 @@ temp_df <- matrix(NA, nrow=(Nrow*Ncol), ncol=(length(c(Ncol,Nrow))+Ntimesteps))
 
 # Creating a vector for the names to be used to name input files (one per time step)
 timesteps_names <- vector(mode="character", length=Ntimesteps)
+```
 
-####################################################################################
+## Building the landscape 
+
+```{r}
 # Here the landscape is built.
 
 # Making the landscape.
@@ -73,25 +100,11 @@ for(timestep in 1:Ntimesteps){
 # Associating coordinates to raster.
 temp_df[, 1] <- coordinates$long
 temp_df[, 2] <- coordinates$lat
+```
 
-####################################################################################
+# Saving landscape 
 
-####################################################################################
-# Viewing the environmental landscape.
-
-# Temperature in a raster format.
-temp_raster <- raster::rasterFromXYZ(temp_df[, c(1, 2, 3)])
-
-# Parameters to plot the landscape.
-tempmin <- min(values(temp_raster), na.rm=T)
-tempmax <- max(values(temp_raster), na.rm=T)
-breaks <- c(0, seq(tempmin, tempmax, length.out=7))
-colorscale <- c('#4040ff', heat.colors(7, rev=T))
-
-# Plotting landscape.
-plot(temp_raster, col=heat.colors(7, rev=T), xlab="Long", ylab="Lat", main="Temperature")
-
-################################################################################
+```{r}
 # Saving landscape.
 
 # Define the work directory.
@@ -113,8 +126,12 @@ for (timestep in 1:Ntimesteps){
 }
 
 # Save the landscapes list as a rds file.
-saveRDS(landscapes_list, file.path(simulation_path, "landscape_list.rds"))
+saveRDS(landscapes_list, file.path(here::here("gen3sis_simulations", "landscape_plain", "landscape_list.rds")))
+```
 
+Saving the objects in your hardrive
+
+```{r}
 ################################################################################
 # Importing the raster list.
 landscapes <- readRDS(file.path(simulation_path, "landscape_list.rds"))
@@ -136,7 +153,8 @@ cost_function_null <- function(source, habitable_src, dest, habitable_dest){
 
 ################################################################################
 # Creating the distances to input landscape in the simulation.
-create_input_landscape(landscapes = landscapes,
+create_input_landscape(landscapes = landscapes, 
+                       overwrite_output = TRUE, 
                        # The cost function to calculate the distances in the landscape.
                        cost_function = cost_function_null,
                        # Directory name to save the files in.
@@ -155,3 +173,8 @@ create_input_landscape(landscapes = landscapes,
 # Finally, it's really important documenting the landscape you created. It is
 # doing writing the METADATA.txt file within the landscape folder. It's
 # automatically created by the function `create_input_landscape`.
+
+```
+
+
+

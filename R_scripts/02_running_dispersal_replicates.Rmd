@@ -1,0 +1,288 @@
+---
+title: "Multiple simulation scenario difusion"
+author: "Gabriel Nakamura"
+date: "2025-04-12"
+output: html_document
+---
+
+# Scenario 1 - High species richness and 100 grids
+
+This scenario is based on the config file `config_presence.R`. The simulation 
+    uses a landscape with 100 grids and the parameters are set in a way to produce
+    high levels of species richness.
+
+```{r}
+library(gen3sis)
+
+# informing the local of configuration file used in this simulation
+path_config <- here::here("gen3sis_simulations", "config", "config_presence", "config_presence.R")
+config_obj <- create_input_config(config_file = path_config)
+path_output <- here::here("gen3sis_simulations_grid100_high_species")
+# informing the landscape used in this simulation scenario
+landscape_scenario1 <- file.path(here::here("gen3sis_simulations", "landscape_plain", "landscapes"))
+
+# number of simulations
+reps_sim <- seq(1:100) 
+
+# running the simulations
+res_sim_disp_only <- 
+  lapply(1:length(reps_sim), function(x){
+    config_obj$gen3sis$general$random_seed <- reps_sim[x]
+    gen3sis::run_simulation(config = config_obj, 
+                            landscape = landscape_scenario1, 
+                            output_directory = here::here(path_output, paste("gen3sis_output_dispersion", x, sep = "_")))
+  }
+  )
+
+
+```
+
+Extracting the simulation results from folders and saving the community composition 
+    and phylogenetic tree in an output folder
+
+```{r}
+# extracting the results 
+
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations_grid100_high_species")
+
+res_all_sim_disp <- 
+  lapply(1:length(reps_sim), function(x){
+    
+    dir_temp <- 
+      dir(here::here(simulation_main,
+                     paste("gen3sis_output_dispersion_", x, sep = ""),
+                     "default_config")
+      )
+    
+    simulation_path_res <- 
+      here::here(simulation_main,
+                     paste("gen3sis_output_dispersion_", x, sep = ""),
+                     "default_config", dir_temp)
+      
+    
+    simulation_output <- 
+      here::here(simulation_main,
+                 "gen3sis_output_dispersion_res_100_highdiv",
+                 paste("output_dispersion", x, ".rds", sep = "")
+                 )
+    
+    res_sim <- 
+      get_node_site_matrix(simulation_path = simulation_path_res, 
+                           save = TRUE, 
+                           output_file = simulation_output
+      )
+  })
+
+
+```
+
+
+# Scenario 2 - Low species richness and 100 grids
+
+We reduced the number of species by reducing the number of maximum coexistences
+    allowed in the configuration file
+    
+
+```{r}
+# informing the local of configuration file used in this simulation
+path_config <- here::here("gen3sis_simulations", "config", "config_presence_less_coex", "config_presence_less_coex.R")
+config_obj <- create_input_config(config_file = path_config)
+path_output <- here::here("gen3sis_simulations_low_diversity_grid100")
+# informing the landscape used in this simulation scenario\
+landscape_scenario1 <- file.path(here::here("gen3sis_simulations", "landscape_plain", "landscapes"))
+
+# number of simulations
+reps_sim <- seq(1:100) 
+
+# running the simulations
+res_sim_disp_only <- 
+  lapply(1:length(reps_sim), function(x){
+    config_obj$gen3sis$general$random_seed <- reps_sim[x]
+    gen3sis::run_simulation(config = config_obj, 
+                            landscape = landscape_scenario1, 
+                            output_directory = here::here(path_output, paste("gen3sis_output_dispersion_lowDiv_grid100", x, sep = "_")))
+  }
+  )
+
+```
+
+Extracting communities
+
+```{r}
+# extracting the results 
+
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations_low_diversity_grid100")
+
+res_all_sim_disp <- 
+  lapply(1:length(reps_sim), function(x){
+    
+    dir_temp <- 
+      dir(here::here(simulation_main,
+                     paste("gen3sis_output_dispersion_lowDiv_grid100", x, sep = "_"),
+                     "default_config")
+      )
+    
+    simulation_path_res <- 
+      here::here(simulation_main,
+                     paste("gen3sis_output_dispersion_lowDiv_grid100", x, sep = "_"),
+                     "default_config", dir_temp)
+      
+    
+    simulation_output <- 
+      here::here(simulation_main,
+                 "gen3sis_output_lowdiv_100",
+                 paste("output_dispersion_low_spp_100_", x, ".rds", sep = "")
+                 )
+    
+    res_sim <- 
+      get_node_site_matrix(simulation_path = simulation_path_res, 
+                           save = TRUE, 
+                           output_file = simulation_output
+      )
+  })
+
+```
+
+# Scenario 3 - High species richness and 900 grids
+
+```{r}
+library(gen3sis)
+
+# informing the local of configuration file used in this simulation
+path_config <- here::here("gen3sis_simulations", "config", "config_presence", "config_presence.R")
+config_obj <- create_input_config(config_file = path_config)
+path_output <- here::here("gen3sis_simulations_high_diversity_grid900")
+# informing the landscape used in this simulation scenario
+landscape_scenario1 <- file.path(here::here("gen3sis_simulations", "landscape_plain_900", "landscapes"))
+
+# number of simulations
+reps_sim <- seq(1:100) 
+
+# running the simulations
+res_sim_disp_only <- 
+  lapply(1:length(reps_sim), function(x){
+    config_obj$gen3sis$general$random_seed <- reps_sim[x]
+    gen3sis::run_simulation(config = config_obj, 
+                            landscape = landscape_scenario1, 
+                            output_directory = here::here(path_output, paste("gen3sis_output_dispersion", x, sep = "_")))
+  }
+  )
+
+
+```
+
+Extracting communities
+
+```{r}
+# extracting the results 
+
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations_high_diversity_grid900")
+
+res_all_sim_disp <- 
+  lapply(1:length(reps_sim), function(x){
+    
+    dir_temp <- 
+      dir(here::here(simulation_main,
+                     paste("gen3sis_output_dispersion", x, sep = "_"),
+                     "default_config")
+      )
+    
+    simulation_path_res <- 
+      here::here(simulation_main,
+                     paste("gen3sis_output_dispersion", x, sep = "_"),
+                     "default_config", dir_temp)
+      
+    
+    simulation_output <- 
+      here::here(simulation_main,
+                 "gen3sis_output_high_diversity_grid900",
+                 paste("output_dispersion_low_spp_100_", x, ".rds", sep = "")
+                 )
+    
+    res_sim <- 
+      get_node_site_matrix(simulation_path = simulation_path_res, 
+                           save = TRUE, 
+                           output_file = simulation_output
+      )
+  })
+
+```
+# Scenario 4 - Low species richness and 900 grids
+
+Here we reduce the number of species by reducing the alpha diversity in simulations
+
+```{r}
+library(gen3sis)
+
+# informing the local of configuration file used in this simulation
+path_config <- here::here("gen3sis_simulations", "config", "config_presence_less_coex", "config_presence_less_coex.R")
+config_obj <- create_input_config(config_file = path_config)
+path_output <- here::here("gen3sis_simulations_low_diversity_grid900")
+# informing the landscape used in this simulation scenario
+landscape_scenario1 <- file.path(here::here("gen3sis_simulations", "landscape_plain_900", "landscapes"))
+
+# number of simulations
+reps_sim <- seq(1:100) 
+
+# running the simulations
+res_sim_disp_only <- 
+  lapply(1:length(reps_sim), function(x){
+    config_obj$gen3sis$general$random_seed <- reps_sim[x]
+    gen3sis::run_simulation(config = config_obj, 
+                            landscape = landscape_scenario1, 
+                            output_directory = here::here(path_output, paste("gen3sis_output_dispersion", x, sep = "_")))
+  }
+  )
+
+
+```
+
+Extracting communities
+
+```{r}
+# extracting the results 
+
+source(here::here("R_functions", "phylo_gen3sis_tools_1.R"))
+source(here::here("R_functions", "get_node_site_matrix_GN.R"))
+
+simulation_main <- here::here("gen3sis_simulations_low_diversity_grid900")
+
+res_all_sim_disp <- 
+  lapply(1:length(reps_sim), function(x){
+    
+    dir_temp <- 
+      dir(here::here(simulation_main,
+                     paste("gen3sis_output_dispersion", x, sep = "_"),
+                     "default_config")
+      )
+    
+    simulation_path_res <- 
+      here::here(simulation_main,
+                     paste("gen3sis_output_dispersion", x, sep = "_"),
+                     "default_config", dir_temp)
+      
+    
+    simulation_output <- 
+      here::here(simulation_main,
+                 "gen3sis_output_low_diversity_grid900",
+                 paste("output_dispersion_low_spp_100_", x, ".rds", sep = "")
+                 )
+    
+    res_sim <- 
+      get_node_site_matrix(simulation_path = simulation_path_res, 
+                           save = TRUE, 
+                           output_file = simulation_output
+      )
+  })
+
+```
+

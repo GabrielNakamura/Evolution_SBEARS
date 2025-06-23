@@ -1,0 +1,294 @@
+---
+title: "Summary statistics of simulated communities"
+author: "Gabriel Nakamura"
+date: "2025-06-11"
+output: html_document
+---
+
+# Initial setup
+
+Reading libraries
+
+```{r}
+library(ggplot2)
+library(patchwork)
+library(ggridges)
+library(dplyr)
+```
+
+Reading output files that consist of .rds files with lists that are the output of the 
+    simulations. 
+    
+- $node_site_matrix: A matrix object with grids in the rows and nodes in the columns
+    with the information of presence (1) or absence (0) of the nodes in all the 
+    grids
+
+- $tree: a phylo object containing the phylogenetic tree that resulted from simulations
+
+- $nameIndexGuide: A data frame object containing three columns.
+  - id: the name of the species in the original tree
+  - height: the time step in which the species originated by cladogenetic process
+  - timestep: the timestep of the simulation process in which the species originated 
+  
+
+Summary statistics for simulated communities with high number of species and 
+    100 grids
+
+Reading files from simulations
+
+```{r}
+
+rds_files_highdiv_100 <- list.files(path = here::here("gen3sis_simulations_grid100_high_species", "gen3sis_output_dispersion_res_100_highdiv"), pattern = "\\.rds$", full.names = TRUE)
+rds_files_highdiv_900 <- list.files(path = here::here("gen3sis_simulations_high_diversity_grid900", "gen3sis_output_high_diversity_grid900"), pattern = "\\.rds$", full.names = TRUE)
+rds_files_lowdiv_100 <- list.files(path = here::here("gen3sis_simulations_low_diversity_grid100", "gen3sis_output_lowdiv_100"), pattern = "\\.rds$", full.names = TRUE)
+rds_files_lowdiv_900 <- list.files(path = here::here("gen3sis_simulations_low_diversity_grid900", "gen3sis_output_low_diversity_grid900"), pattern = "\\.rds$", full.names = TRUE)
+
+res_highdiv_100 <- lapply(rds_files_highdiv_100, function(x) readRDS(x))
+res_highdiv_900 <- lapply(rds_files_highdiv_900, function(x) readRDS(x))
+res_lowdiv_100 <- lapply(rds_files_lowdiv_100, function(x) readRDS(x))
+res_lowdiv_900 <- lapply(rds_files_lowdiv_900, function(x) readRDS(x))
+
+```
+
+# Number of species 
+
+Computing the number of species for all simulations
+
+```{r}
+
+
+richness_highdiv_100 <- 
+  unlist(lapply(res_highdiv_100, function(x){
+    length(x$tree$tip.label)
+  }))
+
+
+richness_highdiv_900 <- 
+  unlist(lapply(res_highdiv_900, function(x){
+    length(x$tree$tip.label)
+  }))
+
+richness_lowdiv_100 <- 
+  unlist(lapply(res_lowdiv_100, function(x){
+    length(x$tree$tip.label)
+  }))
+
+richness_lowdiv_900 <- 
+  unlist(lapply(res_lowdiv_900, function(x){
+    length(x$tree$tip.label)
+  }))
+
+
+df_rich_simulations <-
+  data.frame(richness = c(richness_highdiv_100, richness_highdiv_900, richness_lowdiv_100, richness_lowdiv_900),
+             scenario = rep(c("High Div/100", "High Div/900", "Low Div/100", "Low Div/900"), each = length(richness_highdiv_100)))
+
+```
+
+# Plotting richness in each scenario
+
+```{r}
+# Plot
+plot_richness_all_scenario <- 
+  ggplot(df_rich_simulations, aes(x = richness, y = scenario, fill = scenario)) +
+  geom_density_ridges(
+    scale = 1, 
+    alpha = 0.4, 
+    rel_min_height = 0.01, 
+    color = NA
+  ) +
+  geom_jitter(
+    aes(color = scenario),
+    height = 0.2, 
+    size = 1.5, 
+    alpha = 0.6, 
+    show.legend = FALSE
+  ) +
+  scale_fill_manual(values = c("High Div/100" = "#E69F00", 
+                               "High Div/900" = "#56B4E9",
+                               "Low Div/100" = "#009E73", 
+                               "Low Div/900" = "#D55E00")
+                    ) +
+scale_color_manual(values = c("High Div/100" = "#E69F00",
+                              "High Div/900" = "#56B4E9",
+                              "Low Div/100" = "#009E73",
+                              "Low Div/900" = "#D55E00")
+                   ) +
+  theme_minimal() +
+  labs(title = "", x = "Richness", y = "") +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(color = "black"),          # Add black axis lines
+    axis.title.x = element_text(color = "black", size = 12),       # Make x-axis title black
+    axis.title.y = element_text(color = "black"),        # Make y-axis title black
+    axis.text.x = element_text(color = "black", size = 11),
+    axis.text.y = element_text(color = "black", size = 12),
+    axis.ticks.y = element_line(color = "black"), 
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+# saving the plot
+#ggsave(here::here("output", "FigS1_richness.png"),
+#       width = 9, height = 7,
+#       dpi = 600, plot = plot_richness_all_scenario)
+
+ggsave(here::here("output", "FigS1_richness.pdf"), 
+       plot = plot_richness_all_scenario, 
+       width = 9,
+       height = 7)
+```
+
+
+
+# Abundance distribution 
+
+```{r}
+
+freq_list_highdiv_100 <- 
+  lapply(res_highdiv_100, function(x){
+    colSums(x$node_site_matrix) 
+  })  
+
+df_freq_list_highdiv_100 <- 
+  lapply(freq_list_highdiv_100, function(x){
+    data.frame(freq = x)
+  })
+
+freq_list_highdiv_900 <- 
+  lapply(res_highdiv_900, function(x){
+    colSums(x$node_site_matrix) 
+  })  
+
+df_freq_list_highdiv_900 <- 
+  lapply(freq_list_highdiv_900, function(x){
+    data.frame(freq = x)
+  })
+
+freq_list_lowdiv_100 <- 
+  lapply(res_lowdiv_100, function(x){
+    colSums(x$node_site_matrix) 
+  })  
+
+df_freq_list_lowdiv_100 <- 
+  lapply(freq_list_lowdiv_100, function(x){
+    data.frame(freq = x)
+  })
+
+freq_list_lowdiv_900 <- 
+  lapply(res_lowdiv_900, function(x){
+    colSums(x$node_site_matrix) 
+  })  
+
+df_freq_list_lowdiv_900 <- 
+  lapply(freq_list_lowdiv_900, function(x){
+    data.frame(freq = x)
+  })
+
+
+
+
+```
+
+Joining all simulations categories in a single data frame
+
+```{r}
+vec_reps_spp_high_100 <- unlist(lapply(df_freq_list_highdiv_100, function(x) nrow(x)))
+simul_category <- rep(paste("simul", 1:100), times = vec_reps_spp_high_100)
+df_occ_high_100 <- data.frame(Abundance = do.call(rbind, df_freq_list_highdiv_100), group = simul_category) 
+
+vec_reps_spp_high_900 <- unlist(lapply(df_freq_list_highdiv_900, function(x) nrow(x)))
+simul_category <- rep(paste("simul", 1:100), times = vec_reps_spp_high_900)
+df_occ_high_900 <- data.frame(Abundance = do.call(rbind, df_freq_list_highdiv_900), group = simul_category) 
+
+vec_reps_spp_low_100 <- unlist(lapply(df_freq_list_lowdiv_100, function(x) nrow(x)))
+simul_category <- rep(paste("simul", 1:100), times = vec_reps_spp_low_100)
+df_occ_low_100 <- data.frame(Abundance = do.call(rbind, df_freq_list_lowdiv_100), group = simul_category) 
+
+vec_reps_spp_low_900 <- unlist(lapply(df_freq_list_lowdiv_900, function(x) nrow(x)))
+simul_category <- rep(paste("simul", 1:100), times = vec_reps_spp_low_900)
+df_occ_low_900 <- data.frame(Abundance = do.call(rbind, df_freq_list_lowdiv_900), group = simul_category) 
+
+```
+
+
+# Plotting abundance frequency
+
+
+```{r}
+
+# high diversity with 100 grids
+plot_dens_high_100 <- 
+  ggplot(df_occ_high_100, aes(x = freq, group = group)) +
+  geom_density(color = "gray50", size = 0.6, alpha = 0.4) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(color = "black", size = 0.4),
+    axis.ticks = element_line(color = "black", size = 0.3)
+  ) + 
+  labs(x = "", y = "Density")
+
+
+# high diversity with 900 grids
+plot_dens_high_900 <- 
+  ggplot(df_occ_high_900, aes(x = freq, group = group)) +
+  geom_density(color = "gray50", size = 0.6, alpha = 0.4) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(color = "black", size = 0.4),
+    axis.ticks = element_line(color = "black", size = 0.3)
+  ) + 
+  labs(x = "", y = "")
+
+# low diversity with 100 grids
+plot_dens_low_100 <- 
+  ggplot(df_occ_low_100, aes(x = freq, group = group)) +
+  geom_density(color = "gray50", size = 0.6, alpha = 0.4) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(color = "black", size = 0.4),
+    axis.ticks = element_line(color = "black", size = 0.3)
+  ) + 
+  labs(x = "Number of grids occupied", y = "Density")
+
+# low diversity with 900 grids
+plot_dens_low_900 <- 
+  ggplot(df_occ_low_900, aes(x = freq, group = group)) +
+  geom_density(color = "gray50", size = 0.6, alpha = 0.4) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(color = "black", size = 0.4),
+    axis.ticks = element_line(color = "black", size = 0.3)
+  ) + 
+  labs(x = "Number of grids occupied", y = "")
+
+
+
+# joining and saving graphics
+
+all_density <- 
+  plot_dens_high_100+plot_dens_high_900+plot_dens_low_100+plot_dens_low_900+
+  patchwork::plot_annotation(tag_levels = "a")+
+  patchwork::plot_layout(nrow = 2)&
+  theme(
+    plot.margin = margin(5.5,8,5.5,5.5,"pt")
+  )
+
+#ggsave(here::here("output", "FigSX_all_density_occupancy.png"),
+#       width = 9, height = 7,
+#       dpi = 600, plot = all_density)
+
+ggsave(here::here("output", "FigSX_all_density_occupancy.pdf"),
+       width = 9, height = 7,
+       plot = all_density)
+
+
+```
