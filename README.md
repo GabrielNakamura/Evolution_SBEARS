@@ -459,7 +459,49 @@ The repository is structured as followed
 - `R_scripts`: folder with all the Rmarkdown files needed to run the
   simulations used in the paper
 
-- `gen3sis_simulations`: folder with files needed to set the simulations
-  parameters
+- `gen3sis_simulations`: folders with files needed to set the
+  simulations parameters
+
+  - `config`: `config_presence_high_diversity` folder contains the file
+    `config_presence.R` that presents the parameters to simulate the
+    high species richness scenario. `config_presence_less_coex` contains
+    the file `config_presence_less_coex.R` that contains the parameters
+    configuration to simulate the scenario of low species richness.
+
+- `landscape_plain`: contains the files needed to set the simulation in
+  a landscape with homogeneous environment and 100 grids
+
+- `landscape_plain_900`: contains the files needed to set the simulation
+  in a landscape with 900 grids
+
+- `gen3sis_simulations_grid100_high_species`: contains all the 100
+  replicates of the simulations for the scenario of high species
+  richness in a 100 grid landscape
+
+  - `gen3sis_output_dispersion_res_100_highdiv`: contains the output
+    (.rds) for all the 100 replicates of the high species richness in a
+    100 grid landscape processed to extract the site composition (nodes
+    and species x grids) and phylogenetic tree
+
+- `gen3sis_simulations_high_diversity_grid900`: contains all the 100
+  replicates of the simulations for the scenario of high species
+  richness in a 900 grid landscape
+
+  - `gen3sis_output_high_diversity_grid900`: processed output (.rds
+    files) with the site composition and phylogenetic tree
+
+- `gen3sis_simulations_low_diversity_grid100`: contains all the 100
+  replicates of the simulations for the scenario of low species richness
+  in a 100 grid landscape
+
+  - `gen3sis_output_lowdiv_100`: processed output (.rds files) with the
+    site composition and phylogenetic tree
+
+- `gen3sis_simulations_low_diversity_grid900`: contains all the 100
+  replicates of the simulations for the scenario of low species richness
+  in a 900 grid landscape
+
+  - `gen3sis_output_low_diversity_grid900`: processed output (.rds
+    files) with the site composition and phylogenetic tree
 
 # References
