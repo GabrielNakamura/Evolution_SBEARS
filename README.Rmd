@@ -1,5 +1,5 @@
 ---
-title: "Data and code for SBEARS"
+title: "Data and Code for SBEARS"
 output: 
   md_document:
     variant: gfm
@@ -10,114 +10,89 @@ editor_options:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Context
+# SBEARS: Data & Code Repository
 
-This repository contains all the data and codes (R scripts) to replicate
-the analyses in the manuscript **SBEARS - A site-based method to
-estimate ancestral ranges of species** in review.
+This repository contains all data and R scripts required to replicate the analyses in the manuscript:
 
-# Repository structure
+**SBEARS – A site-based method to estimate ancestral ranges of species** (in review).
 
-To see the main repository structure run the following code:
+---
+
+## Repository Structure
+
+To view the main repository structure, run:
+
 
 ```{r, echo=TRUE, eval=FALSE}
 library(fs)
-
-# Get all tracked files via git
 tracked_files <- system("git ls-files", intern = TRUE)
-
-# Extract top-level folders from tracked files
 top_level_dirs <- unique(dirname(tracked_files))
 top_level_dirs <- top_level_dirs[top_level_dirs != "."]
-
-# List all top-level directories in the current directory
 all_top_dirs <- dir_ls(path = ".", type = "directory", recurse = 0)
-
-# Keep only those that are tracked
 tracked_top_dirs <- all_top_dirs[basename(all_top_dirs) %in% top_level_dirs]
-
-# Show each tracked top-level directory (non-recursive)
 purrr::walk(tracked_top_dirs, ~ dir_tree(.x, recurse = 0))
 
 ```
 
-## Main folders
+---
 
--   `R_functions`: folder containing auxiliary functions that are called
-    in scripts and Rmarkdown files to run analyses
+## Main Folders
 
--   `R_scripts`: folder with all the Rmarkdown files needed to run the
-    simulations used in the paper
+- **R_functions**  
+  Auxiliary functions used in scripts and RMarkdown files for analyses.
 
--   `gen3sis_simulations`: folders with files needed to set the
-    simulations parameters
+- **R_scripts**  
+  All RMarkdown files needed to run the simulations described in the paper.
 
-    -   `config`: `config_presence_high_diversity` folder contains the
-        file `config_presence.R` that presents the parameters to
-        simulate the high species richness scenario.
-        `config_presence_less_coex` contains the file
-        `config_presence_less_coex.R` that contains the parameters
-        configuration to simulate the scenario of low species richness.
+- **gen3sis_simulations**  
+  Files and folders for simulation parameter settings:
+  - `config`:  
+    - `config_presence_high_diversity`: Parameters for high species richness scenario (`config_presence.R`).
+    - `config_presence_less_coex`: Parameters for low species richness scenario (`config_presence_less_coex.R`).
+  - `landscape_plain`: Files for simulations in a homogeneous environment (100 grids).
+  - `landscape_plain_900`: Files for simulations in a 900-grid landscape.
 
--   `landscape_plain`: contains the files needed to set the simulation
-    in a landscape with homogeneous environment and 100 grids
+- **gen3sis_simulations_grid100_high_species**  
+  100 replicates for high species richness in a 100-grid landscape.
+  - `gen3sis_output_dispersion_res_100_highdiv`: Processed outputs (.rds) with site composition and phylogenetic trees.
 
--   `landscape_plain_900`: contains the files needed to set the
-    simulation in a landscape with 900 grids
+- **gen3sis_simulations_high_diversity_grid900**  
+  100 replicates for high species richness in a 900-grid landscape.
+  - `gen3sis_output_high_diversity_grid900`: Processed outputs (.rds) with site composition and phylogenetic trees.
 
--   `gen3sis_simulations_grid100_high_species`: contains all the 100
-    replicates of the simulations for the scenario of high species
-    richness in a 100 grid landscape
+- **gen3sis_simulations_low_diversity_grid100**  
+  100 replicates for low species richness in a 100-grid landscape.
+  - `gen3sis_output_lowdiv_100`: Processed outputs (.rds) with site composition and phylogenetic trees.
 
-    -   `gen3sis_output_dispersion_res_100_highdiv`: contains the output
-        (.rds) for all the 100 replicates of the high species richness
-        in a 100 grid landscape processed to extract the site
-        composition (nodes and species x grids) and phylogenetic tree
+- **gen3sis_simulations_low_diversity_grid900**  
+  100 replicates for low species richness in a 900-grid landscape.
+  - `gen3sis_output_low_diversity_grid900`: Processed outputs (.rds) with site composition and phylogenetic trees.
 
--   `gen3sis_simulations_high_diversity_grid900`: contains all the 100
-    replicates of the simulations for the scenario of high species
-    richness in a 900 grid landscape
+- **empirical data**  
+  Data and code for empirical analyses of ancestral area reconstruction and method comparison (SBEARS, rase, BioGeoBEARS) at different spatial grains.
+  - `Script_correlation_empirical_methods.R`: Code for analyses (see Figure 4 in the manuscript).
+  - `find_threshold_v2.R`: Auxiliary function for threshold definition in dispersal.
+  - `function_SBEARS_spat_v5.R`: Computes SBEARS results.
+  - Data folders by spatial scale:
+    - `Escala 12 celulas`
+    - `Escala 20 celulas`
+    - `Escala 46 celulas`
+    - `Escala 98 celulas`
+    - `Escala 512 celulas`
+    - `Escala 996 celulas`
+    - `Escala 2178 celulas`
 
-    -   `gen3sis_output_high_diversity_grid900`: processed output (.rds
-        files) with the site composition and phylogenetic tree
+- **simulated data**  
+  Data and code for simulated ancestral area reconstruction and method comparison.
+  - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Extracts species presence/absence using BioGeoBEARS.
+  - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Extracts species presence/absence using rase.
+  - `save_rase_BioGeoBEARS_data.R`: Formats data for BioGeoBEARS and rase.
+  - `sim_metacomm_featrues.R`: Reads gen3sis simulation output.
+  - `R_function_BioGeoBEARS_on_simulated_data_v2.R`: Runs BioGeoBEARS on simulated data.
+  - `R_function_rase_on_simulated_data_v5.R`: Runs rase on simulated data.
+  - `function_SBEARS_on_simulated_data.R`: Compares simulated data and SBEARS reconstruction.
+  - `function_SBEARS_spat_v5.R`: Computes SBEARS results.
 
--   `gen3sis_simulations_low_diversity_grid100`: contains all the 100
-    replicates of the simulations for the scenario of low species
-    richness in a 100 grid landscape
+---
 
-    -   `gen3sis_output_lowdiv_100`: processed output (.rds files) with
-        the site composition and phylogenetic tree
-
--   `gen3sis_simulations_low_diversity_grid900`: contains all the 100
-    replicates of the simulations for the scenario of low species
-    richness in a 900 grid landscape
-
-    -   `gen3sis_output_low_diversity_grid900`: processed output (.rds
-        files) with the site composition and phylogenetic tree
-
--   `empirical data`: contains all the data and code needed to run the
-    empirical analyses of ancestral area reconstruction and comparison
-    of methods (SBEARS, rase and BioGeoBEARS) for different spatial
-    grains. 
-      
-      - `Script_correlation_empirical_methods.R` contains all the
-    code needed to run the analyses. The results of these analyses are
-    summarized in Figure 4 of the main text of the manuscript
-
--   `simulated data`: contains all data and code needed to run the
-    analyses of ancestral area reconstruction and comparison of methods
-    (SBEARS, rase and BioGeoBEARS) with simulated data. 
-      
-      - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Script used to extract
-    species presence and absence from simulated data using BioGeoBEARS
-    model
-      - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Script used to
-    extract species presence and absence from simulated data using rase
-    model 
-      - `save_rase_BioGeoBEARS_data.R`: Auxiliary R function used to
-    format data needed to run BioGeoBEARS and rase analyses 
-      - `sim_metacomm_featrues.R`: R function used to read the simulation
-    output from gen3sis simulation
-      - 
-
-# References
+For questions or issues, please open an issue
