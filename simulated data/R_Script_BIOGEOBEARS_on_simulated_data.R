@@ -7,7 +7,7 @@ if (!file.exists(output_directory)) {
   dir.create(output_directory)
 }
 
-source("save_rase_BioGeoBEARS_data.R")# dependance
+source("save_rase_BioGeoBEARS_data.R")# dependence
 source("R_function_BioGeoBEARS_on_simulated_data_v2.R")
 
 

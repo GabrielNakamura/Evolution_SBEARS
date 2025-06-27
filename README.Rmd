@@ -12,31 +12,32 @@ editor_options:
 
 # Context
 
-This repository contains all the data and codes (R scripts) to replicate the 
-    analyses in the manuscript **SBEARS - A site-based method to estimate ancestral ranges of species** in review.
+This repository contains all the data and codes (R scripts) to replicate
+the analyses in the manuscript **SBEARS - A site-based method to
+estimate ancestral ranges of species** in review.
 
 # Repository structure
 
-The repository is structured as followed
+To see the main repository structure run the following code:
 
-```{r, echo=FALSE}
-## Repository structure
+```{r, echo=TRUE, eval=FALSE}
 library(fs)
 
 # Get all tracked files via git
 tracked_files <- system("git ls-files", intern = TRUE)
 
-# Extract top-level folders
+# Extract top-level folders from tracked files
 top_level_dirs <- unique(dirname(tracked_files))
 top_level_dirs <- top_level_dirs[top_level_dirs != "."]
 
-# Filter only top-level folders in the current directory
-tracked_dirs <- dir_ls(path = ".", type = "directory", recurse = 0)
-tracked_dirs <- tracked_dirs[basename(tracked_dirs) %in% basename(top_level_dirs)]
+# List all top-level directories in the current directory
+all_top_dirs <- dir_ls(path = ".", type = "directory", recurse = 0)
 
-# Visualize only tracked folders
-purrr::walk(tracked_dirs, ~ dir_tree(.x, recurse = 0))
+# Keep only those that are tracked
+tracked_top_dirs <- all_top_dirs[basename(all_top_dirs) %in% top_level_dirs]
 
+# Show each tracked top-level directory (non-recursive)
+purrr::walk(tracked_top_dirs, ~ dir_tree(.x, recurse = 0))
 
 ```
 
@@ -64,44 +65,59 @@ purrr::walk(tracked_dirs, ~ dir_tree(.x, recurse = 0))
 -   `landscape_plain_900`: contains the files needed to set the
     simulation in a landscape with 900 grids
 
--   `gen3sis_simulations_grid100_high_species`: contains all the 100 replicates of
-    the simulations for the scenario of high species richness in a 100 grid 
-    landscape
-    
-      - `gen3sis_output_dispersion_res_100_highdiv`: contains the output (.rds) for 
-          all the 100 replicates of the high species richness in a 100 grid landscape
-          processed to extract the site composition (nodes and species x 
-          grids) and phylogenetic tree
+-   `gen3sis_simulations_grid100_high_species`: contains all the 100
+    replicates of the simulations for the scenario of high species
+    richness in a 100 grid landscape
 
-- `gen3sis_simulations_high_diversity_grid900`: contains all the 100 replicates of
-    the simulations for the scenario of high species richness in a 900 grid 
-    landscape
-    
-     -  `gen3sis_output_high_diversity_grid900`: processed output (.rds files)
-         with the site composition and phylogenetic tree 
-         
-- `gen3sis_simulations_low_diversity_grid100`: contains all the 100 replicates of
-    the simulations for the scenario of low species richness in a 100 grid 
-    landscape
-    
-     - `gen3sis_output_lowdiv_100`: processed output (.rds files)
-         with the site composition and phylogenetic tree
-         
-- `gen3sis_simulations_low_diversity_grid900`: contains all the 100 replicates of
-    the simulations for the scenario of low species richness in a 900 grid 
-    landscape
-    
-     - `gen3sis_output_low_diversity_grid900`: processed output (.rds files)
-         with the site composition and phylogenetic tree
-         
-- `empirical data`: contains all the data and code needed to run the empirical 
-    analyses of ancestral area reconstruction and comparison of methods (SBEARS,
-    rase and BioGeoBEARS) for different spatial grains. `Script.R` contains all the
-    code needed to run the analyses.
-    
-- `simulated datas`: contains all data and code needed to run the analyses of 
-    ancestral area reconstruction and comparison of methods (SBEARS, rase and 
-    BioGeoBEARS) with simulated data.
-    
+    -   `gen3sis_output_dispersion_res_100_highdiv`: contains the output
+        (.rds) for all the 100 replicates of the high species richness
+        in a 100 grid landscape processed to extract the site
+        composition (nodes and species x grids) and phylogenetic tree
+
+-   `gen3sis_simulations_high_diversity_grid900`: contains all the 100
+    replicates of the simulations for the scenario of high species
+    richness in a 900 grid landscape
+
+    -   `gen3sis_output_high_diversity_grid900`: processed output (.rds
+        files) with the site composition and phylogenetic tree
+
+-   `gen3sis_simulations_low_diversity_grid100`: contains all the 100
+    replicates of the simulations for the scenario of low species
+    richness in a 100 grid landscape
+
+    -   `gen3sis_output_lowdiv_100`: processed output (.rds files) with
+        the site composition and phylogenetic tree
+
+-   `gen3sis_simulations_low_diversity_grid900`: contains all the 100
+    replicates of the simulations for the scenario of low species
+    richness in a 900 grid landscape
+
+    -   `gen3sis_output_low_diversity_grid900`: processed output (.rds
+        files) with the site composition and phylogenetic tree
+
+-   `empirical data`: contains all the data and code needed to run the
+    empirical analyses of ancestral area reconstruction and comparison
+    of methods (SBEARS, rase and BioGeoBEARS) for different spatial
+    grains. 
+      
+      - `Script_correlation_empirical_methods.R` contains all the
+    code needed to run the analyses. The results of these analyses are
+    summarized in Figure 4 of the main text of the manuscript
+
+-   `simulated data`: contains all data and code needed to run the
+    analyses of ancestral area reconstruction and comparison of methods
+    (SBEARS, rase and BioGeoBEARS) with simulated data. 
+      
+      - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Script used to extract
+    species presence and absence from simulated data using BioGeoBEARS
+    model
+      - `R_Script_BIOGEOBEARS_on_simulated_data.R`: Script used to
+    extract species presence and absence from simulated data using rase
+    model 
+      - `save_rase_BioGeoBEARS_data.R`: Auxiliary R function used to
+    format data needed to run BioGeoBEARS and rase analyses 
+      - `sim_metacomm_featrues.R`: R function used to read the simulation
+    output from gen3sis simulation
+      - 
 
 # References

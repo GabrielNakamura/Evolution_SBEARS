@@ -7,12 +7,14 @@ comm<-read.table("comm_atual_12cells.txt",h=T)
 phy<-ape::read.tree("tree260sp.tre")
 coords<-read.table("comm_coords_12cells.txt",h=T)
 
+# biogeobears reconstruction
 biogeo<-read.table("comm_nodes_biogeobears_12cells.txt",h=T)
 y=biogeo
 rownames(y)<-c(1:12)
 colnames(y)<-c(1:259)
 dim(y)
 
+# rase reconstruction
 rase<-read.table("comm_nodes_rase_12cells.txt",h=T)
 z<-rase
 rownames(z)<-c(1:12)

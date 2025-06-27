@@ -1,4 +1,13 @@
-sim_met<-function(data="/Users/leandroduarte/Desktop/ADA/teste_metodos/Matrizes simuladas/gen3sis_output_lowdiv_100/data/output_dispersion_low_spp_100_", n_sim){
+#' Auxiliary function for reading gen3sis simulation output
+#'
+#' @param data A string containing the path to the simulation output
+#' @param n_sim A scalar indicating the number of simulations
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+sim_met<-function(data, n_sim){
     res_table<-matrix(NA,n_sim,4,dimnames=list(1:n_sim,c("N_spp","Mean_richness","eveness_spp_dist", "n_doubletons")))
       for (i in 1:n_sim){
         res_sim_comm<-readRDS(paste(data,i,".rds",sep = ""))
